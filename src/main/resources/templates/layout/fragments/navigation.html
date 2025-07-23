@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<body>
+
+    <!-- 로그인 전 네비게이션 -->
+    <nav th:fragment="guest-navigation" class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-bold">
+                <a th:href="@{/admin}" class="hover:text-gray-300">관리자 대시보드</a>
+            </div>
+            <ul class="flex space-x-6">
+                <li><a th:href="@{/admin/login}" class="hover:text-gray-300">로그인</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 관리자 네비게이션 (로그인 후) -->
+    <nav th:fragment="admin-navigation" class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-xl font-bold">
+                <a th:href="@{/admin}" class="hover:text-gray-300">관리자 대시보드</a>
+            </div>
+            <ul class="flex space-x-6">
+                <li><a th:href="@{/admin}" class="hover:text-gray-300">대시보드</a></li>
+                <li><a th:href="@{/admin/products}" class="hover:text-gray-300">상품 관리</a></li>
+                <li><a th:href="@{/admin/users}" class="hover:text-gray-300">사용자 관리</a></li>
+            </ul>
+        </div>
+    </nav>
+
+</body>
+</html> 

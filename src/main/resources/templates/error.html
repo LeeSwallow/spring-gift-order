@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <title>제품을 찾을 수 없습니다.</title>
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/main.css}">
+</head>
+<body>
+<section class="bg-white">
+    <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+        <div class="mx-auto max-w-screen-sm text-center m-10">
+            <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-blue-600"
+                th:text="${statusCode != null} ? ${statusCode} : 500">404</h1>
+            <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl">페이지를 찾을 수 없습니다.</p>
+            <p class="mb-4 text-lg font-light text-gray-500"
+               th:text="${errMessage != null} ? ${errMessage} : '예상치 못한 에러가 발생하였습니다.'"></p>
+            <a href="/admin/products" class="inline-flex text-white bg-blue-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center my-4">제품 목록으로 돌아가기</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

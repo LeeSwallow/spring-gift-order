@@ -1,0 +1,121 @@
+<!-- 전체 페이지 레이아웃 -->
+<html th:replace="~{layout/base :: admin_layout('상품 등록', '상품 등록', ~{::create_product_content}, ~{}, ~{::scripts})}" lang="ko">
+<!-- 상품 등록 콘텐츠 fragment -->
+<div th:fragment="create_product_content">
+    <!-- 상품 등록 폼 -->
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <!-- 에러 메시지 -->
+            <div th:if="${errorMessage}" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                <p th:text="${errorMessage}">에러 메시지</p>
+            </div>
+            <form class="space-y-6">
+                <!-- 상품명 -->
+                <div>
+                    <label for="prod-name-input" class="block text-sm font-medium text-gray-700 mb-2">
+                        상품명 <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="prod-name-input" 
+                        name="name"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="상품명을 입력하세요"
+                        required 
+                    />
+                </div>
+                
+                <!-- 가격 -->
+                <div>
+                    <label for="prod-price-input" class="block text-sm font-medium text-gray-700 mb-2">
+                        가격 <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="number" 
+                            id="prod-price-input" 
+                            name="price"
+                            class="w-full px-3 py-2 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="0"
+                            min="0"
+                            required 
+                        />
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <span class="text-gray-500 text-sm">원</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 이미지 URL -->
+                <div>
+                    <label for="prod-image-url-input" class="block text-sm font-medium text-gray-700 mb-2">
+                        이미지 URL <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="text"
+                        id="prod-image-url-input" 
+                        name="imageUrl"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="이미지 URL을 입력하세요"
+                        required 
+                    />
+                </div>
+
+                <!-- 상품 옵션 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        상품 옵션 <span class="text-red-500">*</span>
+                    </label>
+
+                    <!-- 옵션 목록 표시 -->
+                    <div class="bg-gray-10 border-gray-200 rounded-lg mb-4 overflow-y-auto min-h-60 max-h-60 ">
+                        <table class="w-full rounded-lg border">
+                            <thead class="bg-gray-100">
+                                <tr class="py-1 h-10 text-center text-sm font-medium text-gray-600">
+                                    <th class="px-2 border w-[50%]">옵션 이름</th>
+                                    <th class="px-2 border w-[30%]">수량</th>
+                                    <th class="px-2 border">삭제</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prod-option-list" class="bg-white">
+                                <!-- 옵션 항목이 추가될 때마다 여기에 추가됨 -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 옵션 입력 필드 -->
+                    <div id="prod-option-input" class="option-item flex gap-2 items-center justify-between">
+                        <input type="text" name="opt-name" placeholder="옵션 이름"
+                               class="w-[50%] px-3 py-2 border text-left border-gray-300 rounded-lg" required />
+                        <input type="number" name="opt-quantity" placeholder="수량"
+                               class="w-[30%] px-3 py-2 border text-right border-gray-300 rounded-lg" min="0" required />
+                        <button type="button" onclick="addOption()"
+                                class="px-3 py-2 bg-gray-100 border border-gray-300 rounded text-sm hover:bg-gray-200">
+                            + 옵션 추가
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 버튼 영역 -->
+                <div class="flex justify-end space-x-4 pt-6">
+                    <a href="/admin/products" 
+                       class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        취소
+                    </a>
+                    <button 
+                        type="button" onclick="requestCreateProduct()"
+                        class="px-4 py-2 bg-blue-600 border border-transparent rounded-lg text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    >
+                        상품 등록
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <!-- 스크립트 -->
+    <th:block th:fragment="scripts">
+        <script th:src="@{/js/admin/index.js}"></script>
+        <script th:src="@{/js/admin/product-create.js}"></script>
+    </th:block>
+</html>

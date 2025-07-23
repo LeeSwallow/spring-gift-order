@@ -1,0 +1,26 @@
+<!-- 전체 페이지 레이아웃 -->
+<!DOCTYPE html>
+<html th:replace="~{layout/base :: admin_layout('관리자 대시보드', isLogin, ~{::admin_dashboard}, ~{}, ~{})}" lang="ko">
+    <!-- 위의 admin_dashboard fragment가 여기에 들어갑니다 -->
+    <div th:fragment="admin_dashboard">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center">
+                <h2 class="text-xl font-bold text-gray-600 mb-4">여기에 관리자 기능들을 추가할 수 있습니다.</h2>
+            </div>
+            <!-- 관리자 메뉴 -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-2">상품 관리</h3>
+                    <p class="text-blue-700 text-sm mb-4">상품을 추가, 수정, 삭제할 수 있습니다.</p>
+                    <a href="/admin/products" class="text-blue-600 hover:text-blue-800 text-sm font-medium">상품 목록 보기 →</a>
+                </div>
+
+                <div class="bg-green-50 p-6 rounded-lg border border-green-200">
+                    <h3 class="text-lg font-semibold text-green-900 mb-2">사용자 관리</h3>
+                    <p class="text-green-700 text-sm mb-4">사용자 정보를 관리할 수 있습니다.</p>
+                    <a href="/admin/users" class="text-green-600 hover:text-green-800 text-sm font-medium">사용자 목록 보기 →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</html>

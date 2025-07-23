@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<body>
+    <footer th:fragment="footer" class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 시스템 정보 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">관리자 시스템</h3>
+                    <p class="text-gray-300">
+                        선물 위시리스트 API 서버 및 관리자 시스템입니다.
+                    </p>
+                </div>
+                
+                <!-- 시스템 정보 -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">시스템 정보</h3>
+                    <p class="text-gray-300">
+                        API 서버: RESTful API 제공<br>
+                        관리자: 상품 및 사용자 관리<br>
+                        버전: v1.0.0
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</body>
+</html> 

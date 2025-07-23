@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<body>
+    <!-- 페이지네이션 컴포넌트 -->
+    <nav th:fragment="pagination(pageInfo, pageStart, pageEnd)" 
+         th:if="${pageInfo.totalPages > 1}" 
+         class="flex justify-center items-center space-x-2 my-8">
+        
+        <!-- 이전 페이지 -->
+        <a th:if="${pageInfo.page > 0}" 
+           th:href="@{/admin/products(page=${pageInfo.page - 1}, size=${pageInfo.size})}"
+           class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors">
+            이전
+        </a>
+        
+        <!-- 첫 페이지 -->
+        <a th:if="${pageStart > 0}" 
+           th:href="@{/admin/products(page=0, size=${pageInfo.size})}"
+           class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors">
+            1
+        </a>
+        
+        <!-- 생략 표시 -->
+        <span th:if="${pageStart > 1}" class="px-3 py-2 text-sm text-gray-500">...</span>
+        
+        <!-- 페이지 번호들 -->
+        <a th:each="pageNum : ${#numbers.sequence(pageStart, pageEnd)}"
+           th:href="@{/admin/products(page=${pageNum}, size=${pageInfo.size})}"
+           th:class="${pageNum == pageInfo.page ? 
+                     'px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md' : 
+                     'px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors'}"
+           th:text="${pageNum + 1}">
+            페이지 번호
+        </a>
+        
+        <!-- 생략 표시 -->
+        <span th:if="${pageEnd < pageInfo.totalPages - 2}" class="px-3 py-2 text-sm text-gray-500">...</span>
+        
+        <!-- 마지막 페이지 -->
+        <a th:if="${pageEnd < pageInfo.totalPages - 1}" 
+           th:href="@{/admin/products(page=${pageInfo.totalPages - 1}, size=${pageInfo.size})}"
+           class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors"
+           th:text="${pageInfo.totalPages}">
+            마지막 페이지
+        </a>
+        
+        <!-- 다음 페이지 -->
+        <a th:if="${pageInfo.page < pageInfo.totalPages - 1}" 
+           th:href="@{/admin/products(page=${pageInfo.page + 1}, size=${pageInfo.size})}"
+           class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 hover:text-gray-700 transition-colors">
+            다음
+        </a>
+    </nav>
+</body>
+</html> 

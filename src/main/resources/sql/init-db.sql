@@ -1,0 +1,70 @@
+CREATE TABLE IF NOT EXISTS  roles (
+    name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (name)
+);
+
+CREATE TABLE IF NOT EXISTS  users (
+    id BIGINT AUTO_INCREMENT,
+    email VARCHAR(255) NOT NULL UNIQUE ,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS  user_roles (
+    user_id BIGINT NOT NULL,
+    role_name VARCHAR(20) NOT NULL,
+    PRIMARY KEY (user_id, role_name),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (role_name) REFERENCES roles(name) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS  products (
+    id BIGINT AUTO_INCREMENT,
+    name VARCHAR(15) NOT NULL,
+    price BIGINT NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
+    owner_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS  wished_products (
+    id BIGINT AUTO_INCREMENT,
+     user_id BIGINT NOT NULL,
+     product_id BIGINT NOT NULL,
+     quantity INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS options (
+    id BIGINT AUTO_INCREMENT,
+    product_id BIGINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    quantity BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    UNIQUE (product_id, name)
+);
+
+INSERT INTO roles (name) VALUES
+     ('ROLE_USER'),
+     ('ROLE_MD'),
+     ('ROLE_ADMIN');
+
+-- test 어드민 사용자 test@test.com qwerty1234@
+INSERT INTO users (email, password) VALUES
+    ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785');
+
+-- 관리자 계정 부여
+INSERT INTO user_roles(user_id, role_name) VALUES
+    (1, 'ROLE_ADMIN');

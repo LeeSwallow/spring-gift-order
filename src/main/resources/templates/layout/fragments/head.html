@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head th:fragment="head(title, additionalLinks)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">기본 타이틀</title>
+    
+    <!-- 기본 CSS -->
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/main.css}">
+    
+    <!-- 추가 CSS 링크 -->
+    <th:block th:if="${additionalLinks != null and #lists.size(additionalLinks) > 0}">
+        <th:block th:each="tag : ${additionalLinks}">
+            <th:block th:replace="${tag}"></th:block>
+        </th:block>
+    </th:block>
+    
+    <!-- 메타 태그 -->
+    <meta name="author" content="Lee Swallow">
+</head>
