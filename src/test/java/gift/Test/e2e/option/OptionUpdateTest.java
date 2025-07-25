@@ -4,7 +4,7 @@ import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionPatchRequest;
 import gift.dto.option.OptionUpdateRequest;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;

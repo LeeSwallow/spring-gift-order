@@ -4,7 +4,7 @@ import gift.common.exception.AccessDeniedException;
 import gift.common.model.CustomAuth;
 import gift.common.util.TokenProvider;
 import gift.dto.auth.LoginRequest;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.service.auth.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

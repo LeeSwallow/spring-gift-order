@@ -1,4 +1,4 @@
-package gift.entity;
+package gift.entity.type;
 
 public enum UserRole {
     ROLE_GUEST("ROLE_GUEST", 0),

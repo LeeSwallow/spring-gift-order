@@ -4,7 +4,7 @@ import gift.common.exception.AccessDeniedException;
 import gift.common.mapper.ModelMapper;
 import gift.common.model.CustomPage;
 import gift.entity.Product;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.repository.product.ProductRepository;
 import gift.service.user.UserService;
 import org.slf4j.Logger;

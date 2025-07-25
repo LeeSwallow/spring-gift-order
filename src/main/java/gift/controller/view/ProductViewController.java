@@ -8,7 +8,7 @@ import gift.common.model.CustomPage;
 import gift.dto.CustomPageRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.entity.Product;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.service.product.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;

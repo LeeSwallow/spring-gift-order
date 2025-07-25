@@ -4,7 +4,7 @@ import gift.common.aop.annotation.PreAuthorize;
 import gift.common.exception.AccessDeniedException;
 import gift.common.exception.UnauthorizedException;
 import gift.common.model.CustomAuth;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

@@ -48,7 +48,8 @@ public class EntityToDtoMapper {
     public static UserDefaultResponse toDto(User user) {
         return new UserDefaultResponse(
             user.getId(),
-            user.getEmail()
+            user.getEmail(),
+            user.getProvider()
         );
     }
 
@@ -57,6 +58,8 @@ public class EntityToDtoMapper {
             user.getId(),
             user.getEmail(),
             user.getPassword(),
+            user.getClientId(),
+            user.getProvider(),
             user.getRoles().stream()
                 .map(role -> role.getName().toString())
                 .collect(Collectors.toList()),

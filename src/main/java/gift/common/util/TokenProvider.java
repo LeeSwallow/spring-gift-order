@@ -1,6 +1,6 @@
 package gift.common.util;
 
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.common.model.CustomAuth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

@@ -5,8 +5,10 @@ CREATE TABLE IF NOT EXISTS  roles (
 
 CREATE TABLE IF NOT EXISTS  users (
     id BIGINT AUTO_INCREMENT,
-    email VARCHAR(255) NOT NULL UNIQUE ,
-    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    client_id VARCHAR(255) UNIQUE,
+    provider VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
@@ -62,8 +64,8 @@ INSERT INTO roles (name) VALUES
      ('ROLE_ADMIN');
 
 -- test 어드민 사용자 test@test.com qwerty1234@
-INSERT INTO users (email, password) VALUES
-    ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785');
+INSERT INTO users (email, password, client_id, provider) VALUES
+    ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785', NULL, 'LOCAL');
 
 -- 관리자 계정 부여
 INSERT INTO user_roles(user_id, role_name) VALUES

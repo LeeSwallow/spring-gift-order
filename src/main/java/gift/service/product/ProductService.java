@@ -2,7 +2,7 @@ package gift.service.product;
 
 import gift.common.model.CustomPage;
 import gift.entity.Product;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import org.springframework.data.domain.Pageable;
 
 

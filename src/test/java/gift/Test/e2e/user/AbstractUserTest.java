@@ -5,7 +5,7 @@ import gift.Test.e2e.AbstractControllerTest;
 import gift.Test.e2e.testutil.RestAssuredUtils;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.restdocs.RestDocumentationContextProvider;

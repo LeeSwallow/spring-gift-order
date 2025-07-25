@@ -1,7 +1,7 @@
 package gift.repository.role;
 
 import gift.entity.Role;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

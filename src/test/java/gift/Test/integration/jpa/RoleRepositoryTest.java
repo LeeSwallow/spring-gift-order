@@ -1,7 +1,7 @@
 package gift.Test.integration.jpa;
 
 import gift.entity.Role;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.repository.role.RoleRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

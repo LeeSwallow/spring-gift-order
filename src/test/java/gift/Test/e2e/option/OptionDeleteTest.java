@@ -2,7 +2,7 @@ package gift.Test.e2e.option;
 
 import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;

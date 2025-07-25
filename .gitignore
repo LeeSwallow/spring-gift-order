@@ -41,3 +41,6 @@ out/
 
 ## Frontend ###
 **/node_modules/
+
+## environment files
+**/application-secret.properties

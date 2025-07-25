@@ -1,6 +1,6 @@
 package gift.common.aop.annotation;
 
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 
 import java.lang.annotation.*;
 

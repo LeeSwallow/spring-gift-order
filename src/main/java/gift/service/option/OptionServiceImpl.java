@@ -6,7 +6,7 @@ import gift.common.model.CustomAuth;
 import gift.common.model.CustomPage;
 import gift.entity.Option;
 import gift.entity.Product;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.repository.option.OptionRepository;
 import gift.service.product.ProductService;
 import org.slf4j.Logger;

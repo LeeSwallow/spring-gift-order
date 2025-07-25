@@ -1,17 +1,15 @@
 package gift.controller.api;
 
+import gift.dto.auth.KakaoLoginRequest;
 import gift.dto.auth.LoginRequest;
 import gift.dto.auth.SignupRequest;
 import gift.dto.auth.TokenResponse;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.service.auth.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
@@ -44,4 +42,15 @@ public class AuthController {
         String token = authService.login(request.email(), request.password());
         return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
     }
+
+    @GetMapping("/oauth2/kakao")
+    public ResponseEntity<TokenResponse> kakaoLogin(@ModelAttribute KakaoLoginRequest request) {
+        String token = authService.kakaoLogin(
+                request.code(),
+                request.error(),
+                request.errorDescription()
+        );
+        return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
+    }
+
 }

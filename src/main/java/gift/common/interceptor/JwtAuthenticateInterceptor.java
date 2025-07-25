@@ -3,7 +3,7 @@ package gift.common.interceptor;
 import gift.common.exception.UnauthorizedException;
 import gift.common.model.CustomAuth;
 import gift.common.util.TokenProvider;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;

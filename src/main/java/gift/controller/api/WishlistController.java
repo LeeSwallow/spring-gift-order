@@ -11,7 +11,7 @@ import gift.dto.wishlist.WishedProductCreateRequest;
 import gift.dto.wishlist.WishedProductPatchRequest;
 import gift.dto.wishlist.UpdateWishedProductRequest;
 import gift.dto.wishlist.WishedProductResponse;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.entity.WishedProduct;
 import gift.service.wishlist.WishedProductService;
 import jakarta.validation.Valid;

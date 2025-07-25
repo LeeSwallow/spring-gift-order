@@ -3,7 +3,7 @@ package gift.Test.e2e.product;
 import gift.dto.option.OptionCreateRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductResponse;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;

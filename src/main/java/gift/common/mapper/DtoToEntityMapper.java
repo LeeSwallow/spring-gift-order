@@ -8,7 +8,7 @@ import gift.dto.user.UserUpdateRequest;
 import gift.entity.Option;
 import gift.entity.Product;
 import gift.entity.User;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 
 import java.util.stream.Collectors;
 

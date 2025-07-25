@@ -11,7 +11,7 @@ import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionPatchRequest;
 import gift.dto.option.OptionUpdateRequest;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.service.option.OptionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

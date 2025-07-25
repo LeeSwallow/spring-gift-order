@@ -1,6 +1,6 @@
 package gift.common.model;
 
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 
 import java.util.Comparator;
 import java.util.Set;

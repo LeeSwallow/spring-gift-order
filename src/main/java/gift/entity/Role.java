@@ -1,5 +1,6 @@
 package gift.entity;
 
+import gift.entity.type.UserRole;
 import jakarta.persistence.*;
 
 @Entity

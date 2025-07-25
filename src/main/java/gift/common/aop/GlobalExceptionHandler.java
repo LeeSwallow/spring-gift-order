@@ -1,7 +1,6 @@
 package gift.common.aop;
 
-import gift.common.exception.CriticalServerException;
-import gift.common.exception.UnauthorizedException;
+import gift.common.exception.*;
 import gift.common.model.error.ErrorMessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -17,9 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-import gift.common.exception.AccessDeniedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.net.URI;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice(basePackages = "gift.controller.api")
@@ -117,6 +116,17 @@ public class GlobalExceptionHandler {
     ) {
         var builder = new ErrorMessageResponse.Builder(request, e, HttpStatus.CONFLICT);
         return new ResponseEntity<>(builder.build().toProblemDetail(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(KakaoAuthorizationException.class)
+    public ResponseEntity<ProblemDetail> handleKakaoAuthorizationException(
+            KakaoAuthorizationException e, HttpServletRequest request
+    ) {
+        var builder = new ErrorMessageResponse.Builder(request, e, e.getStatus());
+        ProblemDetail errorDetail = builder.build().toProblemDetail();
+        errorDetail.setType(URI.create("https://developers.kakao.com/docs/latest/ko/kakaologin/trouble-shooting"));
+        errorDetail.setTitle("카카오 인증 오류 : " + e.getErrorCode());
+        return new ResponseEntity<>(errorDetail, e.getStatus());
     }
 
     @ExceptionHandler(CriticalServerException.class)

@@ -1,6 +1,7 @@
 package gift.Test.integration.jpa;
 
 import gift.entity.*;
+import gift.entity.type.UserRole;
 import gift.repository.option.OptionRepository;
 import gift.repository.product.ProductRepository;
 import gift.repository.user.UserRepository;

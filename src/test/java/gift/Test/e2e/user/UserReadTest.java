@@ -2,7 +2,7 @@ package gift.Test.e2e.user;
 
 import gift.common.model.CustomPage;
 import gift.dto.user.UserAdminResponse;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +27,8 @@ public class UserReadTest extends  AbstractUserTest{
             fieldWithPath("contents[].id").description("사용자 ID").type(JsonFieldType.NUMBER).optional(),
             fieldWithPath("contents[].email").description("사용자 이메일").type(JsonFieldType.STRING).optional(),
             fieldWithPath("contents[].password").description("인코딩된 사용자 비밀번호").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("contents[].clientId").description("사용자 클라이언트 ID").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("contents[].provider").description("사용자 제공자 (기본값: LOCAL)").type(JsonFieldType.STRING).optional(),
             fieldWithPath("contents[].roles").description("사용자 역할 목록").type(JsonFieldType.ARRAY).optional(),
             fieldWithPath("contents[].createdAt").description("사용자 생성 시간").type(JsonFieldType.STRING).optional(),
             fieldWithPath("contents[].updatedAt").description("사용자 업데이트 시간").type(JsonFieldType.STRING).optional()
@@ -36,6 +38,8 @@ public class UserReadTest extends  AbstractUserTest{
             fieldWithPath("id").description("사용자 ID").type(JsonFieldType.NUMBER),
             fieldWithPath("email").description("사용자 이메일").type(JsonFieldType.STRING),
             fieldWithPath("password").description("인코딩된 사용자 비밀번호").type(JsonFieldType.STRING),
+            fieldWithPath("clientId").description("사용자 클라이언트 ID").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("provider").description("사용자 제공자 (기본값: LOCAL)").type(JsonFieldType.STRING),
             fieldWithPath("roles").description("사용자 역할 목록").type(JsonFieldType.ARRAY),
             fieldWithPath("createdAt").description("사용자 생성 시간").type(JsonFieldType.STRING),
             fieldWithPath("updatedAt").description("사용자 업데이트 시간").type(JsonFieldType.STRING)
@@ -43,7 +47,8 @@ public class UserReadTest extends  AbstractUserTest{
 
     public static final FieldDescriptor[] SINGLE_USER_READ_RESPONSE = {
             fieldWithPath("id").description("사용자 ID").type(JsonFieldType.NUMBER),
-            fieldWithPath("email").description("사용자 이메일").type(JsonFieldType.STRING),
+            fieldWithPath("email").description("사용자 이메일").type(JsonFieldType.STRING).optional(),
+            fieldWithPath("provider").description("사용자 제공자 (기본값: LOCAL)").type(JsonFieldType.STRING),
     };
 
 

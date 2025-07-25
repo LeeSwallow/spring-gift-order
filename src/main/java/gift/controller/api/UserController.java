@@ -14,7 +14,7 @@ import gift.dto.user.UserDefaultResponse;
 import gift.dto.user.UserUpdateRequest;
 import gift.entity.User;
 import gift.common.model.CustomPage;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import gift.service.user.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

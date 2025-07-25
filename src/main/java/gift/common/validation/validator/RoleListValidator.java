@@ -1,7 +1,7 @@
 package gift.common.validation.validator;
 
 import gift.common.validation.annotation.ValidRoleList;
-import gift.entity.UserRole;
+import gift.entity.type.UserRole;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
