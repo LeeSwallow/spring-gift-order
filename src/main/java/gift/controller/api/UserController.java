@@ -37,7 +37,7 @@ public class UserController {
     @GetMapping
     @PreAuthorize(UserRole.ROLE_ADMIN)
     public ResponseEntity<CustomPage<UserAdminResponse>> getAllUsers(
-            @AllowedSortFields(value = { "id", "email", "createdAt", "updatedAt" }, showAllowedFields = true)
+            @AllowedSortFields(value = { "id", "createdAt", "updatedAt" }, showAllowedFields = true)
             @Valid @ModelAttribute CustomPageRequest request
     ) {
         CustomPage<User> userPage = userService.findAllBy(ModelMapper.toPageRequest(request));
@@ -59,7 +59,7 @@ public class UserController {
     @GetMapping("/me")
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<UserDefaultResponse> getCurrentUser(
-            @RequestAttribute("auth")CustomAuth auth
+            CustomAuth auth
         ) {
         var user = userService.findById(auth.userId());
         return new ResponseEntity<>(EntityToDtoMapper.toDto(user), HttpStatus.OK);
@@ -95,7 +95,7 @@ public class UserController {
     @PutMapping("/me")
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<UserDefaultResponse> updateCurrentUser(
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             @Valid @RequestBody UserUpdateRequest request
     ) {
         log.info("현재 사용자 업데이트 요청: {}", request);
@@ -120,7 +120,7 @@ public class UserController {
     @DeleteMapping("/me")
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<Void> deleteCurrentUser(
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         log.info("현재 사용자 삭제 요청: ID={}", auth.userId());
         userService.deleteById(auth.userId());

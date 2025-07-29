@@ -9,11 +9,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "users")
+@Table(
+    name = "users",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"client_id", "provider"})}
+)
 @NamedEntityGraph(
         name = "User.withRole",
         attributeNodes = { @NamedAttributeNode("roles") }
 )
+
 public class User extends BaseEntity {
 
     @Column(nullable = true, unique = true)
@@ -22,7 +26,7 @@ public class User extends BaseEntity {
     @Column(nullable = true)
     private String password;
 
-    @Column(nullable = true, unique = true)
+    @Column(nullable = true)
     private String clientId;
 
     @Enumerated(EnumType.STRING)
@@ -50,7 +54,7 @@ public class User extends BaseEntity {
     }
 
     public User(Long id, String email, String password, Set<UserRole> roles) {
-        this(id, email, password, null, Provider.LOCAL, roles);
+        this(id, email, password, null, Provider.EMAIL, roles);
     }
 
     public User(String clientId, Provider provider) {

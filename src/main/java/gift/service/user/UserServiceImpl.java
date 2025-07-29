@@ -4,6 +4,7 @@ import gift.common.mapper.ModelMapper;
 import gift.common.util.PasswordEncoder;
 import gift.entity.User;
 import gift.common.model.CustomPage;
+import gift.entity.type.Provider;
 import gift.repository.user.UserRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Pageable;
@@ -37,8 +38,21 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public User findByEmail(String email) {
+        if (email == null) {
+            throw new IllegalArgumentException("이메일은 null일 수 없습니다.");
+        }
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("해당 이메일의 사용자를 찾을 수 없습니다. : " + email));
+    }
+
+    @Override
+    public User findByClientIdAndProvider(String clientId, Provider provider) {
+        if (clientId == null || provider == null) {
+            throw new IllegalArgumentException("clientId와 provider는 null일 수 없습니다.");
+        }
+        return userRepository.findByClientIdAndProvider(clientId, provider)
+                .orElseThrow(() -> new NoSuchElementException("해당 클라이언트 ID와 제공자의 사용자를 찾을 수 없습니다. clientId: "
+                        + clientId + ", provider: " + provider));
     }
 
     @Override
@@ -94,7 +108,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean existsByClientIdAndProvider(String clientId, Provider provider) {
+        if (clientId == null || provider == null) {
+            throw new IllegalArgumentException("clientId와 provider는 null일 수 없습니다.");
+        }
+        return userRepository.existsByClientIdAndProvider(clientId, provider);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public User getReference(Long userId) {
+        if (!existsById(userId)) {
+            throw new NoSuchElementException("해당 ID의 사용자를 찾을 수 없습니다. : " + userId);
+        }
         return userRepository.getReferenceById(userId);
     }
 }

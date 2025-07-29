@@ -1,5 +1,6 @@
 package gift.Test.e2e.user;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.common.model.CustomPage;
 import gift.dto.user.UserAdminResponse;
 import gift.entity.type.UserRole;
@@ -12,13 +13,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 
 public class UserReadTest extends  AbstractUserTest{
 
@@ -59,10 +59,16 @@ public class UserReadTest extends  AbstractUserTest{
         String url = getRequestUrl();
         RestAssured.given(this.spec)
                 .filter(document("사용자 전체 조회 성공",
-                        responseFields(MULTIPLE_ADMIN_READ_RESPONSE),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        queryParameters(PAGE_PARAMETERS))
-                )
+                        resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("User")
+                            .summary("전체 사용자 조회 API")
+                            .description("전체 사용자 목록을 페이지 단위로 조회합니다.")
+                            .queryParameters(PAGE_PARAMETERS)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .responseFields(MULTIPLE_ADMIN_READ_RESPONSE)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .when()
@@ -89,7 +95,7 @@ public class UserReadTest extends  AbstractUserTest{
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .queryParam("page", 0)
                 .queryParam("size", 5)
-                .queryParam("sort", "email,desc") // 이메일 내림차순 정렬
+                .queryParam("sort", "id,desc") // 이메일 내림차순 정렬
                 .when()
                 .get(url)
                 .then()
@@ -97,12 +103,11 @@ public class UserReadTest extends  AbstractUserTest{
                 .extract()
                 .as(new TypeRef<>() {});
 
-        String prevEmail = res.getContents().getFirst().email();
+        Long prevId = Long.MAX_VALUE; // 이전 ID를 최대값으로 초기화
         for (UserAdminResponse user : res.getContents()) {
-            String currentEmail = user.email();
-            // 이메일이 내림차순으로 정렬되어 있는지 확인
-            assertThat(currentEmail, lessThanOrEqualTo(prevEmail));
-            prevEmail = currentEmail;
+            assertThat(user.id(), notNullValue());
+            assertThat(user.id(), lessThanOrEqualTo(prevId));
+            prevId = user.id(); // 현재 ID를 이전 ID로 업데이트
         }
     }
 
@@ -165,12 +170,18 @@ public class UserReadTest extends  AbstractUserTest{
 
         RestAssured.given(this.spec)
                 .filter(document("사용자 ID로 조회 성공",
-                        responseFields(SINGLE_ADMIN_READ_RESPONSE),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(
-                                parameterWithName("id").description("조회할 사용자 ID")
-                        )
-                ))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("User")
+                            .summary("단건 사용자 조회 API")
+                            .description("특정 사용자의 정보를 조회합니다.")
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .responseFields(SINGLE_ADMIN_READ_RESPONSE)
+                            .pathParameters(
+                                    parameterWithName("id").description("조회할 사용자 ID")
+                            )
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .when()
@@ -216,9 +227,15 @@ public class UserReadTest extends  AbstractUserTest{
         UserAdminResponse userResponse = this.testUsers.get(UserRole.ROLE_USER);
         RestAssured.given(this.spec)
                 .filter(document("사용자 단건 조회 성공 - 일반 사용자 권한",
-                        responseFields(SINGLE_USER_READ_RESPONSE),
-                        requestHeaders(AUTHENTICATE_HEADERS)
-                        ))
+                        resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("User")
+                            .summary("자기 자신 조회 API")
+                            .description("일반 사용자 권한으로 자신의 정보를 조회합니다.")
+                            .responseFields(SINGLE_USER_READ_RESPONSE)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 일반 사용자 권한으로 요청
                 .when()

@@ -7,6 +7,7 @@ import gift.repository.role.RoleRepository;
 import gift.repository.user.UserRepository;
 import gift.repository.wishlist.WishedProductRepository;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 

@@ -1,5 +1,6 @@
 package gift.Test.e2e.option;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
 import gift.entity.type.UserRole;
@@ -15,12 +16,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 
 public class OptionReadTest extends  AbstractOptionTest {
     static final FieldDescriptor[] OPTION_READ_RESPONSE = {
@@ -81,9 +82,16 @@ public class OptionReadTest extends  AbstractOptionTest {
         // 옵션 전체 조회 성공 테스트
         RestAssured.given(this.spec)
                 .filter(document("옵션 전체 조회 성공",
-                        queryParameters(PAGE_PARAMETERS),
-                        pathParameters(parameterWithName("productId").description("옵션이 속한 제품 ID")),
-                        responseFields(OPTION_READ_PAGE_RESPONSE)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                        .tag("Option")
+                        .summary("옵션 전체 조회")
+                        .description("토큰의 해당하는 사용자의 모든 옵션을 조회합니다.")
+                        .requestHeaders(AUTHENTICATE_HEADERS)
+                        .queryParameters(PAGE_PARAMETERS)
+                        .responseFields(OPTION_READ_PAGE_RESPONSE)
+                        .build()
+                )))
                 .header(AUTH_HEADER_KEY, this.adminToken)
                 .when()
                 .get(getRequestUrl(), this.testProductId)
@@ -140,11 +148,20 @@ public class OptionReadTest extends  AbstractOptionTest {
         var testOption = this.testOptions.getFirst();
         RestAssured.given(this.spec)
                 .filter(document("옵션 ID로 조회 성공",
-                        pathParameters(
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Option")
+                            .summary("옵션 ID로 조회")
+                            .description("옵션 ID로 특정 옵션을 조회합니다.")
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .pathParameters(
                                 parameterWithName("productId").description("옵션이 속한 제품 ID"),
                                 parameterWithName("optionId").description("조회할 옵션 ID")
-                        ),
-                        responseFields(OPTION_READ_RESPONSE)))
+                            )
+                            .responseFields(OPTION_READ_RESPONSE)
+                            .build()
+                    )
+                ))
                 .header(AUTH_HEADER_KEY, this.adminToken)
                 .when()
                 .get(getRequestUrl() + "/{optionId}", this.testProductId, testOption.id())

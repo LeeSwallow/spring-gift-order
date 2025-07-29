@@ -1,5 +1,6 @@
 package gift.Test.e2e.product;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.product.ProductUpdateRequest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
@@ -10,12 +11,11 @@ import org.springframework.restdocs.request.ParameterDescriptor;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class ProductUpdateTest extends AbstractProductTest {
 
@@ -46,10 +46,17 @@ public class ProductUpdateTest extends AbstractProductTest {
         ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", 1500L, "수정된 이미지 URL");
         RestAssured.given(this.spec)
                 .filter(document("상품 수정 성공",
-                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        requestFields(PRODUCT_UPDATE_REQUEST),
-                        responseFields(PRODUCT_UPDATE_RESPONSE)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Product")
+                            .summary("제품 수정 API")
+                            .description("제품 ID를 통해 제품 정보를 수정합니다.")
+                            .requestFields(PRODUCT_UPDATE_REQUEST)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS)
+                            .responseFields(PRODUCT_UPDATE_RESPONSE)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
@@ -70,12 +77,7 @@ public class ProductUpdateTest extends AbstractProductTest {
         Long validId = this.testProducts.getFirst().id(); // 테스트용 제품 ID 가져오기
         ProductUpdateRequest request = new ProductUpdateRequest("수정된 제품", null, "수정된 이미지 URL"); // 가격 필드 누락
 
-        RestAssured.given(this.spec)
-                .filter(document("상품 수정 성공 - 특정 필드 누락",
-                        pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        requestFields(PRODUCT_UPDATE_REQUEST),
-                        responseFields(PRODUCT_UPDATE_RESPONSE)))
+        RestAssured.given()
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
@@ -103,12 +105,7 @@ public class ProductUpdateTest extends AbstractProductTest {
         );
 
         for (ProductUpdateRequest request : invalidRequests) {
-            RestAssured.given(this.spec)
-                    .filter(document("상품 수정 실패 - 유효성 검사 실패",
-                            pathParameters(PRODUCT_UPDATE_PATH_PARAMETERS),
-                            requestHeaders(AUTHENTICATE_HEADERS),
-                            requestFields(PRODUCT_UPDATE_REQUEST),
-                            responseFields(ERROR_MESSAGE_FIELDS)))
+            RestAssured.given()
                     .contentType("application/json")
                     .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                     .body(request)

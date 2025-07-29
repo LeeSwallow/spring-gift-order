@@ -1,9 +1,6 @@
 package gift.controller.api;
 
-import gift.dto.auth.KakaoLoginRequest;
-import gift.dto.auth.LoginRequest;
-import gift.dto.auth.SignupRequest;
-import gift.dto.auth.TokenResponse;
+import gift.dto.auth.*;
 import gift.entity.type.UserRole;
 import gift.service.auth.AuthService;
 import jakarta.validation.Valid;
@@ -44,13 +41,13 @@ public class AuthController {
     }
 
     @GetMapping("/oauth2/kakao")
-    public ResponseEntity<TokenResponse> kakaoLogin(@ModelAttribute KakaoLoginRequest request) {
-        String token = authService.kakaoLogin(
+    public ResponseEntity<KakaoResponse> kakaoLogin(@ModelAttribute KakaoLoginRequest request) {
+        var res = authService.kakaoLogin(
                 request.code(),
                 request.error(),
                 request.errorDescription()
         );
-        return new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK);
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
 }

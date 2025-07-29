@@ -24,6 +24,27 @@
 + [X] auth controller 구현 및 엔드포인트 수정
   + [X] 새로운 카카오 로그인 엔드포인트 `/api/auth/oauth2/kakao` 구현
 
+
+### 2 단계 : 주문 기능 구현 
+
++ [X] orders 스키마 & 엔티티 추가
+  + [X] orders 테이블 생성
+  + [X] orders 엔티티 구현 및 연관 관계 설정(users, options)
+
++ [X] 주문 기능 구현
+  + [X] 주문 생성 기능 구현(UserRole 이상 일때)
+  + [X] 주문 조회 기능 구현(UserRole 이상 일때)
+  + [X] 주문 취소 기능 구현(AdminRole 이상 일때)
+  + [X] 주문 상태 변경 기능 구현(AdminRole 이상 일때, message field는 UserROle 일 때도 가능)
+
++ [X] 주문 관련 테스트 코드 작성
+  + [X] 주문 관련 예외 처리 구현
+
++ [X] 주문 생성 시 나에게 알림 기능 구현
+  + [X] 카카오 로그인 구현
+  + [X] 카카오 알림 추가 여부 스키마 추가 & 구현
+  + [X] External restclient 구현
+  
 ---
 ## 이전 단계 요약
 

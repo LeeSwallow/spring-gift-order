@@ -1,5 +1,6 @@
 package gift.Test.e2e.product;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.common.model.CustomPage;
 import gift.dto.product.ProductResponse;
 import io.restassured.RestAssured;
@@ -11,12 +12,14 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class ProductReadTest extends AbstractProductTest {
 
@@ -47,8 +50,14 @@ public class ProductReadTest extends AbstractProductTest {
         String url = getBaseUrl() + "/api/products";
         RestAssured.given(this.spec)
                 .filter(document("상품 전체 조회 성공",
-                        queryParameters(PAGE_PARAMETERS),
-                        responseFields(PRODUCT_READ_PAGE_RESPONSE)))
+                        resource(ResourceSnippetParameters.builder()
+                            .tag("Product")
+                            .summary("전체 제품 조회 API")
+                            .description("전체 제품 목록을 페이지 단위로 조회합니다.")
+                            .queryParameters(PAGE_PARAMETERS)
+                            .responseFields(PRODUCT_READ_PAGE_RESPONSE)
+                            .build()
+                )))
                 .when()
                 .get(url)
                 .then()
@@ -143,10 +152,17 @@ public class ProductReadTest extends AbstractProductTest {
         RestAssured
                 .given(this.spec)
                 .filter(document("상품 특정 조회 성공",
-                        pathParameters(
-                                parameterWithName("id").description("조회할 제품 ID")
-                        ),
-                        responseFields(PRODUCT_READ_RESPONSE)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                        .tag("Product")
+                        .summary("특정 제품 조회 API")
+                        .description("제품 ID에 해당하는 특정 제품을 조회합니다.")
+                        .pathParameters(
+                            parameterWithName("id").description("조회할 제품 ID")
+                        )
+                        .responseFields(PRODUCT_READ_RESPONSE)
+                        .build()
+                )))
                 .when()
                 .get(url, testProductId)
                 .then()

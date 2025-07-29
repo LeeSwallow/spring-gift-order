@@ -1,8 +1,9 @@
 package gift.common.interceptor;
 
 import gift.common.exception.UnauthorizedException;
-import gift.common.model.CustomAuth;
+import gift.common.model.TokenInfo;
 import gift.common.util.TokenProvider;
+import gift.entity.type.Provider;
 import gift.entity.type.UserRole;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,7 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String TOKEN_ATTRIBUTE = "tokenInfo";
 
     private String extractToken(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith(BEARER_PREFIX)) {
@@ -38,7 +40,9 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
         String token = extractToken(authorizationHeader);
 
         if (token == null) {
-            request.setAttribute("auth", new CustomAuth(null, UserRole.ROLE_GUEST));
+            request.setAttribute("tokenInfo", new TokenInfo(authorizationHeader,
+                    null, UserRole.ROLE_GUEST, Provider.UNKNOWN));
+
             return true; // 토큰이 없으면 인증을 건너뜁니다.
         }
 
@@ -46,12 +50,12 @@ public class JwtAuthenticateInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             throw new UnauthorizedException("유효하지 않은 토큰입니다. 올바른 토큰을 제공해야 합니다.");
         }
-        CustomAuth auth = tokenProvider.getAuthentication(token);
-        if (auth == null) {
+        TokenInfo tokenInfo = tokenProvider.getTokenInfo(token);
+        if (tokenInfo == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             throw new UnauthorizedException("토큰에서 인증 정보를 가져올 수 없습니다. 올바른 토큰을 제공해야 합니다.");
         }
-        request.setAttribute("auth", auth);
+        request.setAttribute(TOKEN_ATTRIBUTE, tokenInfo);
         return true;
     }
 }

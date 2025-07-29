@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DataJpaTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class AbstractRepositoryTest {
 }

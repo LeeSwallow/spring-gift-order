@@ -53,6 +53,13 @@ public class OptionServiceImpl implements OptionService{
 
     @Override
     @Transactional(readOnly = true)
+    public Option findById(Long id) {
+        return optionRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 옵션입니다. id: " + id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Option findBy(Long id, Long productId) {
         if (!optionRepository.existsByIdAndProductId(id, productId)) {
             throw new NoSuchElementException("존재하지 않는 옵션입니다. id: " + id + ", productId: " + productId);
@@ -91,8 +98,6 @@ public class OptionServiceImpl implements OptionService{
             existingOption.setQuantity(quantity);
         }
         return optionRepository.save(existingOption);
-
-
     }
 
     @Override
@@ -101,10 +106,10 @@ public class OptionServiceImpl implements OptionService{
         Product product = productService.findById(productId);
         validateAuthorization(auth, product);
         Option existingOption = findBy(id, productId);
-        Long newQuantity = existingOption.getQuantity() + amount;
+        long newQuantity = existingOption.getQuantity() + amount;
 
         if (newQuantity < 0 || newQuantity >= 1_00_000_000L) {
-            throw new IllegalArgumentException("수량은 0 이상, 10억 미만이어야 합니다. 현재 수량: %d, 변경량, %d"
+            throw new IllegalArgumentException("수정할 옵션의 수량은 0 이상, 10억 미만이어야 합니다. 현재 수량: %d, 변경 수량 : %d"
                     .formatted(existingOption.getQuantity(), amount));
         }
         existingOption.setQuantity(newQuantity);
@@ -126,5 +131,14 @@ public class OptionServiceImpl implements OptionService{
         } else {
             throw new NoSuchElementException("존재하지 않는 옵션입니다. id: " + id + ", productId: " + productId);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Option getReference(Long id) {
+        if (!optionRepository.existsById(id)) {
+            throw new NoSuchElementException("존재하지 않는 옵션입니다. id: " + id);
+        }
+        return optionRepository.getReferenceById(id);
     }
 }

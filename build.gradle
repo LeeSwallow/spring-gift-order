@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.epages.restdocs-api-spec' version '0.18.2'
 }
 
 group = 'camp.nextstep.edu'
@@ -40,11 +41,19 @@ dependencies {
     // Spring REST Docs & Test Dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'io.rest-assured:rest-assured'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2'
+    testImplementation 'com.epages:restdocs-api-spec-restassured:0.18.2'
+    testImplementation 'io.rest-assured:rest-assured'
+}
+
+openapi3 {
+    setServer("http://localhost:8080")
+    title = 'Nextstep API'
+    description = 'Nextstep API Documentation'
+    version = '0.0.1'
+    format = "yaml"
 }
 
 tasks.named('test') {

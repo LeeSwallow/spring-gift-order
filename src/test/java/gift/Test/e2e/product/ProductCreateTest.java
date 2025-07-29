@@ -1,21 +1,24 @@
 package gift.Test.e2e.product;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.option.OptionCreateRequest;
 import gift.dto.product.ProductCreateRequest;
 import gift.dto.product.ProductResponse;
 import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 public class ProductCreateTest extends AbstractProductTest {
 
@@ -48,10 +51,16 @@ public class ProductCreateTest extends AbstractProductTest {
                 new ProductCreateRequest("새로운 제품", 1000L, "이미지 URL", options);
         ProductResponse response = RestAssured.given(this.spec)
                 .filter(document("상품 생성 성공",
-                        requestFields(PRODUCT_CREATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(PRODUCT_CREATE_RESPONSE)
-                ))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Product")
+                            .summary("제품 생성 API")
+                            .description("제품 이름, 가격, 이미지 URL, 옵션 목록을 입력받아 새로운 제품을 생성합니다.")
+                            .requestFields(PRODUCT_CREATE_REQUEST)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .responseFields(PRODUCT_CREATE_RESPONSE)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)
@@ -77,12 +86,7 @@ public class ProductCreateTest extends AbstractProductTest {
         );
         ProductCreateRequest request = new ProductCreateRequest("카카오 제품", 1000L, "이미지 URL", options);
 
-        ProductResponse response = RestAssured.given(this.spec)
-                .filter(document("상품 생성 성공 - MD 권한",
-                        requestFields(PRODUCT_CREATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(PRODUCT_CREATE_RESPONSE)
-                ))
+        ProductResponse response = RestAssured.given()
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_MD)) // MD 권한으로 요청
                 .body(request)
@@ -138,12 +142,7 @@ public class ProductCreateTest extends AbstractProductTest {
         );
         ProductCreateRequest request = new ProductCreateRequest("카카오 제품", 1000L, "이미지 URL", options);
 
-        RestAssured.given(this.spec)
-                .filter(document("상품 생성 실패 - 유효성 검사 실패",
-                        requestFields(PRODUCT_CREATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(ERROR_MESSAGE_FIELDS)
-                ))
+        RestAssured.given()
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // USER 권한으로 요청
                 .body(request)
@@ -171,7 +170,7 @@ public class ProductCreateTest extends AbstractProductTest {
                 new ProductCreateRequest("제품 이름", 1000L, "이미지 URL", List.of()) // 옵션이 비어 있음
         );
         requests.forEach(request ->
-            RestAssured.given(this.spec)
+            RestAssured.given()
                     .contentType("application/json")
                     .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                     .body(request)
@@ -194,12 +193,7 @@ public class ProductCreateTest extends AbstractProductTest {
         );
         ProductCreateRequest request = new ProductCreateRequest("제품 이름", 1000L, "이미지 URL", options);
 
-        RestAssured.given(this.spec)
-                .filter(document("상품 생성 실패 - 권한 없음",
-                        requestFields(PRODUCT_CREATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(ERROR_MESSAGE_FIELDS)
-                ))
+        RestAssured.given()
                 .contentType("application/json")
                 .body(request)
                 .when()

@@ -1,5 +1,6 @@
 package gift.Test.e2e.wishlist;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.product.ProductResponse;
 import gift.dto.wishlist.WishedProductCreateRequest;
 import io.restassured.RestAssured;
@@ -10,10 +11,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class WishlistCreateTest extends AbstractWishlistTest {
     static final FieldDescriptor[] WISHLIST_CREATE_REQUEST = {
@@ -43,9 +45,15 @@ public class WishlistCreateTest extends AbstractWishlistTest {
 
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 추가 성공",
-                        requestFields(WISHLIST_CREATE_REQUEST),
-                        responseFields(WISHLIST_CREATE_RESPONSE)
-                ))
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Wishlist")
+                                .summary("위시리스트에 제품 추가 API")
+                                .description("토큰을 제공한 사용자의 위시리스트에 제품을 추가합니다.")
+                                .requestFields(WISHLIST_CREATE_REQUEST)
+                                .requestHeaders(AUTHENTICATE_HEADERS)
+                                .responseFields(WISHLIST_CREATE_RESPONSE)
+                                .build()
+                )))
                 .contentType("application/json")
                 .body(request)
                 .header(AUTH_HEADER_KEY, this.testToken) // 관리자 권한으로 요청
@@ -69,7 +77,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
         WishedProductCreateRequest defaultRequest = new WishedProductCreateRequest(
                 this.testProducts.get(2).id(), null);
 
-        RestAssured.given(this.spec)
+        RestAssured.given()
                 .contentType("application/json")
                 .body(defaultRequest)
                 .header(AUTH_HEADER_KEY, this.testToken) // 관리자 권한으로 요청
@@ -90,7 +98,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
                 , new WishedProductCreateRequest(1L, -1) // 수량이 음수인 경우
         );
         requests.forEach(request ->
-            RestAssured.given(this.spec)
+            RestAssured.given()
                     .contentType("application/json")
                     .body(request)
                     .header(AUTH_HEADER_KEY, this.testToken) // 관리자 권한으로 요청
@@ -105,11 +113,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
         // 위시리스트에 제품 추가 실패 - 권한이 없는 경우
         WishedProductCreateRequest request = new WishedProductCreateRequest(this.testProducts.getFirst().id(), 2);
 
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 제품 추가 실패 - 권한 없음",
-                        requestFields(WISHLIST_CREATE_REQUEST),
-                        responseFields(ERROR_MESSAGE_FIELDS)
-                ))
+        RestAssured.given()
                 .contentType("application/json")
                 .body(request) // header 없이 요청
                 .post(getRequestUrl())
@@ -124,11 +128,7 @@ public class WishlistCreateTest extends AbstractWishlistTest {
         // 위시리스트에 제품 추가 실패 - 제품이 존재하지 않는 경우
         WishedProductCreateRequest request = new WishedProductCreateRequest(9999L, 2);
 
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 제품 추가 실패 - 제품 없음",
-                        requestFields(WISHLIST_CREATE_REQUEST),
-                        responseFields(ERROR_MESSAGE_FIELDS)
-                ))
+        RestAssured.given()
                 .contentType("application/json")
                 .body(request)
                 .header(AUTH_HEADER_KEY, this.testToken) // 관리자 권한으로 요청

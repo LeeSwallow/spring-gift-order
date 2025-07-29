@@ -1,5 +1,6 @@
 package gift.Test.e2e.option;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.option.OptionCreateRequest;
 import gift.dto.option.OptionResponse;
 import gift.entity.type.UserRole;
@@ -14,10 +15,9 @@ import org.springframework.restdocs.request.ParameterDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class OptionDeleteTest extends AbstractOptionTest {
 
@@ -59,9 +59,15 @@ public class OptionDeleteTest extends AbstractOptionTest {
 
         RestAssured.given(this.spec)
                 .filter(document("옵션 단건 삭제 성공",
-                        pathParameters(OPTION_DELETE_PATH_PARAMETERS),
-                        requestHeaders(AUTHENTICATE_HEADERS)
-                    ))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                        .tag("Option")
+                        .summary("옵션 단건 삭제")
+                        .description("Id에 해당하는 옵션을 삭제합니다.")
+                        .pathParameters(OPTION_DELETE_PATH_PARAMETERS)
+                        .requestHeaders(AUTHENTICATE_HEADERS)
+                        .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .when()
@@ -84,7 +90,7 @@ public class OptionDeleteTest extends AbstractOptionTest {
     public void Option_Delete_Failure_LastOption() {
         Long productId = this.testProducts.get(UserRole.ROLE_USER).id();
 
-        var options = RestAssured.given(this.spec)
+        var options = RestAssured.given()
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .when()

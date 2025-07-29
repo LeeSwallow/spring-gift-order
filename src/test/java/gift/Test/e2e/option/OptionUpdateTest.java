@@ -1,8 +1,9 @@
 package gift.Test.e2e.option;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.option.OptionCreateRequest;
-import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionPatchRequest;
+import gift.dto.option.OptionResponse;
 import gift.dto.option.OptionUpdateRequest;
 import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
@@ -19,13 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class OptionUpdateTest extends AbstractOptionTest {
 
@@ -99,23 +99,30 @@ public class OptionUpdateTest extends AbstractOptionTest {
         OptionCreateRequest request = new OptionCreateRequest("수정된 옵션", 20L);
 
         RestAssured.given(this.spec)
-                .filter(document("옵션 수정 성공",
-                        requestFields(OPTION_UPDATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(OPTION_UPDATE_PATH_PARAMETERS),
-                        responseFields(OPTION_UPDATE_RESPONSE)))
-                .contentType("application/json")
-                .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
-                .body(request)
-                .when()
-                .put(getRequestUrl() + "/{id}", validProductId, validId) // 존재하는 옵션 ID로 변경
-                .then()
-                .statusCode(200)
-                .body("id", notNullValue())
-                .body("name", notNullValue())
-                .body("name", equalTo(request.name())) // 이름은 요청한 값으로 확인
-                .body("quantity", notNullValue())
-                .body("quantity", equalTo(request.quantity().intValue())); // 수량은 요청한 값으로 확인
+            .filter(document("옵션 수정 성공",
+                resource(
+                    ResourceSnippetParameters.builder()
+                        .tag("Option")
+                        .summary("옵션 수정")
+                        .description("Id에 해당하는 옵션을 수정합니다.")
+                        .requestFields(OPTION_UPDATE_REQUEST)
+                        .requestHeaders(AUTHENTICATE_HEADERS)
+                        .pathParameters(OPTION_UPDATE_PATH_PARAMETERS)
+                        .responseFields(OPTION_UPDATE_RESPONSE)
+                        .build()
+            )))
+            .contentType("application/json")
+            .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
+            .body(request)
+            .when()
+            .put(getRequestUrl() + "/{id}", validProductId, validId) // 존재하는 옵션 ID로 변경
+            .then()
+            .statusCode(200)
+            .body("id", notNullValue())
+            .body("name", notNullValue())
+            .body("name", equalTo(request.name())) // 이름은 요청한 값으로 확인
+            .body("quantity", notNullValue())
+            .body("quantity", equalTo(request.quantity().intValue())); // 수량은 요청한 값으로 확인
     }
 
     @Test
@@ -160,10 +167,17 @@ public class OptionUpdateTest extends AbstractOptionTest {
         long expectedQuantity = validOption.quantity() + request.amount();
         RestAssured.given(this.spec)
                 .filter(document("옵션 증감 성공",
-                        requestFields(OPTION_PATCH_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(OPTION_UPDATE_PATH_PARAMETERS),
-                        responseFields(OPTION_UPDATE_RESPONSE)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Option")
+                            .summary("옵션 증감")
+                            .description("Id에 해당하는 옵션의 수량을 증감합니다.")
+                            .requestFields(OPTION_PATCH_REQUEST)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .pathParameters(OPTION_UPDATE_PATH_PARAMETERS)
+                            .responseFields(OPTION_UPDATE_RESPONSE)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken) // 관리자 권한으로 요청
                 .body(request)

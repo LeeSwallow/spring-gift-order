@@ -1,14 +1,15 @@
 package gift.Test.e2e.wishlist;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class WishListDeleteTest extends  AbstractWishlistTest {
 
@@ -24,9 +25,17 @@ public class WishListDeleteTest extends  AbstractWishlistTest {
         // 위시리스트에서 제품 삭제 요청
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 제품 삭제 성공",
-                        pathParameters(
-                                parameterWithName("id").description("삭제할 위시리스트 ID")
-                        )))
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                .tag("Wishlist")
+                                .summary("위시리스트 제품 삭제 API")
+                                .description("위시리스트에서 특정 제품을 삭제합니다. 일반 사용자의 경우 자기 자신의 위시리스트만 삭제할 수 있습니다.")
+                                .pathParameters(
+                                        parameterWithName("id").description("삭제할 위시리스트 ID")
+                                )
+                                .requestHeaders(AUTHENTICATE_HEADERS)
+                                .build()
+                )))
                 .header(AUTH_HEADER_KEY, this.testToken)
                 .delete(getRequestUrl() + "/{id}", res.id())
                 .then()
@@ -42,7 +51,15 @@ public class WishListDeleteTest extends  AbstractWishlistTest {
         );
 
         RestAssured.given(this.spec)
-                .filter(document("위시리스트 전체 삭제 성공"))
+                .filter(document("위시리스트 전체 삭제 성공",
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                .tag("Wishlist")
+                                .summary("위시리스트 전체 삭제 API")
+                                .description("사용자의 위시리스트를 전체 삭제합니다. 토큰으로 부터 사용자를 식별하여 전체 위시리스트를 삭제합니다.")
+                                .requestHeaders(AUTHENTICATE_HEADERS)
+                                .build()
+                )))
                 .header(AUTH_HEADER_KEY, this.testToken)
                 .delete(getRequestUrl())
                 .then()
@@ -64,11 +81,7 @@ public class WishListDeleteTest extends  AbstractWishlistTest {
         // 존재하지 않는 제품 ID로 위시리스트 삭제 요청
         Long nonExistentProductId = 999L; // 예시로 존재하지 않는 ID 사용
 
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 제품 삭제 실패 - 제품 없음",
-                        pathParameters(
-                                parameterWithName("productId").description("삭제할 위시리스트 ID")
-                        )))
+        RestAssured.given()
                 .header(AUTH_HEADER_KEY, this.testToken)
                 .delete(getRequestUrl() + "/{productId}", nonExistentProductId)
                 .then()
@@ -81,11 +94,7 @@ public class WishListDeleteTest extends  AbstractWishlistTest {
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 1);
 
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 제품 삭제 실패 - 권한 없음",
-                        pathParameters(
-                                parameterWithName("productId").description("삭제할 위시리스트 ID")
-                        )))
+        RestAssured.given()
                 .delete(getRequestUrl() + "/{productId}", res.id())
                 .then()
                 .statusCode(403);
@@ -95,8 +104,7 @@ public class WishListDeleteTest extends  AbstractWishlistTest {
     @DisplayName("위시리스트 전체 삭제 실패 테스트: 권한이 없는 경우(403 Forbidden)")
     public void delete_All_Wishlist_Failure_Unauthorized() {
         // 위시리스트 전체 삭제 요청 시 권한이 없는 경우
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 전체 삭제 실패 - 권한 없음"))
+        RestAssured.given()
                 .delete(getRequestUrl())
                 .then()
                 .statusCode(403);

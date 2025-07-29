@@ -1,13 +1,13 @@
 package gift.Test.e2e.product;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class ProductDeleteTest extends AbstractProductTest {
 
@@ -18,9 +18,17 @@ public class ProductDeleteTest extends AbstractProductTest {
         String url = getRequestUrl() + "/{id}";
         RestAssured.given(this.spec)
                 .filter(document("상품 삭제 성공",
-                        pathParameters(parameterWithName("id").description("삭제할 제품 ID")),
-                        requestHeaders(AUTHENTICATE_HEADERS)
-                ))
+                        resource(
+                            ResourceSnippetParameters.builder()
+                                .tag("Product")
+                                .summary("제품 삭제 API")
+                                .description("제품 ID를 입력받아 해당 제품을 삭제합니다.")
+                                .pathParameters(
+                                        parameterWithName("id").description("삭제할 제품 ID")
+                                )
+                                .requestHeaders(AUTHENTICATE_HEADERS)
+                                .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken)
                 .delete(url, testProductId)

@@ -19,6 +19,7 @@ import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
@@ -79,7 +80,12 @@ public abstract class AbstractControllerTest {
     protected void setUp(RestDocumentationContextProvider provider) {
         RestAssured.port = port;
         this.spec = new RequestSpecBuilder()
-                .addFilter(documentationConfiguration(provider))
+                .setPort(port)
+                .addFilter(documentationConfiguration(provider)
+                        .operationPreprocessors()
+                        .withRequestDefaults(prettyPrint())
+                        .withResponseDefaults(prettyPrint())
+                )
                 .build();
 
         LoginRequest request = new LoginRequest("test@test.com", "qwerty1234@");

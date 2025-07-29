@@ -1,5 +1,6 @@
 package gift.Test.e2e.option;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.option.OptionCreateRequest;
 import gift.entity.type.UserRole;
 import io.restassured.RestAssured;
@@ -11,13 +12,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.stream.Stream;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class OptionCreateTest extends AbstractOptionTest {
     private final FieldDescriptor[] OPTION_CREATE_REQUEST = {
@@ -52,13 +52,20 @@ public class OptionCreateTest extends AbstractOptionTest {
         Long testProductId = this.testProducts.get(UserRole.ROLE_USER).id();
 
         RestAssured.given(this.spec)
-                .filter(document("옵션 생성 성공",
-                        pathParameters(
-                            parameterWithName("productId").description("상품 ID")
-                        ),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        requestFields(OPTION_CREATE_REQUEST),
-                        responseFields(PRODUCT_CREATE_RESPONSE)))
+            .filter(document("옵션 생성 성공",
+                resource(
+                    ResourceSnippetParameters.builder()
+                        .tag("Option")
+                        .description("옵션 생성 API")
+                        .requestFields(OPTION_CREATE_REQUEST)
+                        .responseFields(PRODUCT_CREATE_RESPONSE)
+                        .pathParameters(
+                                parameterWithName("productId").description("상품 ID")
+                        )
+                        .requestHeaders(AUTHENTICATE_HEADERS)
+                        .responseHeaders(AUTHENTICATE_HEADERS)
+                        .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.adminToken)
                 .body(request)

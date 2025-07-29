@@ -82,7 +82,7 @@ public class ProductViewController {
     @PostMapping("/create")
     public String createProduct(
             @ModelAttribute ProductCreateRequest request,
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             Model model
     ) {
         try {

@@ -98,7 +98,7 @@ public class RestAssuredUtils {
 
     public OptionResponse createOptionToProduct(OptionCreateRequest request, Long productId, String token) {
         return RestAssured.given()
-                .header(AUTH_HEADER_KEY, this.adminToken)
+                .header(AUTH_HEADER_KEY, token)
                 .contentType("application/json")
                 .body(request)
                 .when()

@@ -7,11 +7,12 @@ CREATE TABLE IF NOT EXISTS  users (
     id BIGINT AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE,
     password VARCHAR(255),
-    client_id VARCHAR(255) UNIQUE,
+    client_id VARCHAR(255),
     provider VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (client_id, provider)
 );
 
 CREATE TABLE IF NOT EXISTS  user_roles (
@@ -58,6 +59,20 @@ CREATE TABLE IF NOT EXISTS options (
     UNIQUE (product_id, name)
 );
 
+CREATE TABLE IF NOT EXISTS  orders (
+    id BIGINT AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    option_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    message VARCHAR(255) DEFAULT NULL,
+    total_price BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (option_id) REFERENCES options(id) ON DELETE CASCADE
+);
+
 INSERT INTO roles (name) VALUES
      ('ROLE_USER'),
      ('ROLE_MD'),
@@ -65,8 +80,10 @@ INSERT INTO roles (name) VALUES
 
 -- test 어드민 사용자 test@test.com qwerty1234@
 INSERT INTO users (email, password, client_id, provider) VALUES
-    ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785', NULL, 'LOCAL');
+    ('test@test.com', '1469f57c482317fba59bb34d16c10b0f5116e64c2201e430a70cc16a34a6a785', NULL, 'EMAIL'),
+    (null, null, 'd4a76f830d09f0064d77af2700955dc600dd7d1b3c9ba3ecc44a99fbb94ef54f', 'KAKAO');
 
 -- 관리자 계정 부여
 INSERT INTO user_roles(user_id, role_name) VALUES
-    (1, 'ROLE_ADMIN');
+    (1, 'ROLE_ADMIN'),
+    (2, 'ROLE_USER');

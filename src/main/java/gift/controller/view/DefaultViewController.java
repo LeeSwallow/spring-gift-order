@@ -52,7 +52,7 @@ public class DefaultViewController {
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
-        if (tokenProvider.getAuthentication(token).role() != UserRole.ROLE_ADMIN) {
+        if (tokenProvider.getTokenInfo(token).role() != UserRole.ROLE_ADMIN) {
             throw new AccessDeniedException("관리자 권한이 필요합니다.");
         }
     }
@@ -68,7 +68,7 @@ public class DefaultViewController {
 
     @GetMapping
     public String adminHome(
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             Model model
     ) {
         boolean isLogin = auth != null && auth.role() == UserRole.ROLE_ADMIN;
@@ -79,7 +79,7 @@ public class DefaultViewController {
 
     @GetMapping("/login")
     public String adminLogin(
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             Model model
     ) {
         if (auth.role() == UserRole.ROLE_ADMIN) {

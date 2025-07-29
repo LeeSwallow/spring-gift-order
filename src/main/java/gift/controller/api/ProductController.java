@@ -56,7 +56,7 @@ public class ProductController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<ProductResponse> createProduct(
             @Valid @RequestBody ProductCreateRequest dto,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         Product product = productService.create(DtoToEntityMapper.toEntity(dto), auth.role(), auth.userId());
         log.info("상품 생성 성공: {}", product);
@@ -68,7 +68,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
             @Valid @RequestBody ProductUpdateRequest dto,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         var product = DtoToEntityMapper.toEntity(dto);
         product.setId(id);
@@ -81,7 +81,7 @@ public class ProductController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<Void> deleteProduct(
             @PathVariable @Min(value = 0, message = "상품 ID는 0 이상이어야 합니다.") Long id,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         productService.deleteById(id, auth.role(), auth.userId());
         log.info("상품 삭제 성공: ID={}", id);

@@ -1,4 +1,4 @@
-package gift.dto.auth;
+package gift.dto.external;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

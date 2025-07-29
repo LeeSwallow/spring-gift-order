@@ -38,7 +38,7 @@ public class WishlistController {
                 showAllowedFields = true
             )
             @Valid @ModelAttribute CustomPageRequest request,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         CustomPage<WishedProduct> wishlistPage = wishedProductService.findAllBy(
                 auth.userId(),
@@ -53,7 +53,7 @@ public class WishlistController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<WishedProductResponse> getWishlistItem(
             @PathVariable Long id,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         WishedProduct wishedProduct = wishedProductService.findBy(auth.userId(), id);
         return new ResponseEntity<>(EntityToDtoMapper.toDto(wishedProduct), HttpStatus.OK);
@@ -63,7 +63,7 @@ public class WishlistController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<WishedProductResponse> addWishlistItem(
             @Valid @RequestBody WishedProductCreateRequest request,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         WishedProduct wishedProduct = wishedProductService.create(auth.userId(), request.productId(), request.quantity());
         return new ResponseEntity<>(EntityToDtoMapper.toDto(wishedProduct), HttpStatus.CREATED);
@@ -74,7 +74,7 @@ public class WishlistController {
     public ResponseEntity<?> updateWishlistItem(
             @PathVariable Long id,
             @Valid @RequestBody UpdateWishedProductRequest request,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         var wishedProduct = wishedProductService.updateQuantityBy(auth.userId(), id, request.quantity());
         if (wishedProduct.isEmpty()) {
@@ -88,7 +88,7 @@ public class WishlistController {
     public ResponseEntity<?> patchWishlistItem(
             @PathVariable Long id,
             @Valid @RequestBody WishedProductPatchRequest request,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         Optional<WishedProduct> wishedProduct;
         wishedProduct = wishedProductService.changeQuantityBy(auth.userId(), id, request.amount());
@@ -102,7 +102,7 @@ public class WishlistController {
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<Void> deleteWishlistItem(
             @PathVariable Long id,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         wishedProductService.deleteBy(auth.userId(), id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -111,7 +111,7 @@ public class WishlistController {
     @DeleteMapping
     @PreAuthorize(UserRole.ROLE_USER)
     public ResponseEntity<Void> deleteAllWishlistItems(
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         wishedProductService.deleteAll(auth.userId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

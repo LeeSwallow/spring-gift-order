@@ -1,5 +1,5 @@
 package gift.entity.type;
 
 public enum Provider {
-    LOCAL, KAKAO
+    UNKNOWN, EMAIL, KAKAO
 }

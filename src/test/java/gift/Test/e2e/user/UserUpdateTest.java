@@ -1,5 +1,6 @@
 package gift.Test.e2e.user;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.common.util.PasswordEncoder;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserUpdateRequest;
@@ -13,13 +14,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class UserUpdateTest extends AbstractUserTest {
 
@@ -61,10 +61,17 @@ public class UserUpdateTest extends AbstractUserTest {
                 "updated@test.com", "updated1234!", List.of("ROLE_USER"));
         RestAssured.given(this.spec)
                 .filter(document("관리자 권한으로 사용자 수정 성공",
-                        requestFields(ADMIN_UPDATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(parameterWithName("id").description("수정할 사용자 ID")),
-                        responseFields(ADMIN_UPDATE_RESPONSE)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("User")
+                            .summary("사용자 수정 API")
+                            .description("관리자 권한으로 사용자의 이메일, 비밀번호, 역할을 수정합니다.")
+                            .requestFields(ADMIN_UPDATE_REQUEST)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .pathParameters(parameterWithName("id").description("수정할 사용자 ID"))
+                            .responseFields(ADMIN_UPDATE_RESPONSE)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .body(request)
@@ -91,12 +98,7 @@ public class UserUpdateTest extends AbstractUserTest {
         String url = getRequestUrl() + "/{id}";
         UserAdminResponse userResponse = this.testUsers.get(UserRole.ROLE_USER);
         UserUpdateRequest request = new UserUpdateRequest(null, "updated1234!", null);
-        RestAssured.given(this.spec)
-                .filter(document("관리자 권한으로 사용자 수정 성공 - 특정 필드 누락",
-                        requestFields(ADMIN_UPDATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(parameterWithName("id").description("수정할 사용자 ID")),
-                        responseFields(ADMIN_UPDATE_RESPONSE)))
+        RestAssured.given()
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .body(request)
@@ -120,10 +122,17 @@ public class UserUpdateTest extends AbstractUserTest {
         String url = getRequestUrl() + "/me";
         UserUpdateRequest request = new UserUpdateRequest(null, "updated1234!", null);
         RestAssured.given(this.spec)
-                .filter(document("일반 사용자 권한으로 사용자 수정 성공",
-                        requestFields(ADMIN_UPDATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(USER_UPDATE_RESPONSE)))
+                .filter(document("일반 사용자 권한으로 자기 자신 수정 성공",
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("User")
+                            .summary("자기 자신 수정 API")
+                            .description("일반 사용자 권한으로 자신의 이메일, 비밀번호, 역할을 수정합니다.")
+                            .requestFields(ADMIN_UPDATE_REQUEST)
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .responseFields(USER_UPDATE_RESPONSE)
+                            .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 관리자 권한으로 요청
                 .body(request)
@@ -142,12 +151,7 @@ public class UserUpdateTest extends AbstractUserTest {
         UserAdminResponse testUser = this.testUsers.get(UserRole.ROLE_USER);
         UserUpdateRequest request = new UserUpdateRequest(
                 "updated@test.com", "updated1234!", List.of("ROLE_USER"));
-        RestAssured.given(this.spec)
-                .filter(document("일반 사용자 권한으로 사용자 수정 실패",
-                        requestFields(ADMIN_UPDATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        pathParameters(parameterWithName("id").description("수정할 사용자 ID")),
-                        responseFields(ERROR_MESSAGE_FIELDS)))
+        RestAssured.given()
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_USER)) // 일반 사용자 권한으로 요청
                 .body(request)

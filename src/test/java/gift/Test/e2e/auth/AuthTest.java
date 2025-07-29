@@ -1,5 +1,6 @@
 package gift.Test.e2e.auth;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.auth.LoginRequest;
 import gift.dto.auth.SignupRequest;
 import gift.dto.user.UserCreateRequest;
@@ -12,9 +13,10 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class AuthTest extends AbstractAuthTest {
 
@@ -45,8 +47,15 @@ public class AuthTest extends AbstractAuthTest {
         // 로그인 요청
         RestAssured.given(this.spec)
                 .filter(document("로그인 성공",
-                        requestFields(LOGIN_REQUEST_FIELDS),
-                        responseFields(AUTH_RESPONSE_FIELDS)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Auth")
+                            .summary("로그인 API")
+                            .description("사용자의 이메일, 비밀번호를 이용하여 사용자를 인증하고 토큰을 발급합니다.")
+                            .requestFields(LOGIN_REQUEST_FIELDS)
+                            .responseFields(AUTH_RESPONSE_FIELDS)
+                            .build())
+                ))
                 .contentType("application/json")
                 .body(new LoginRequest(req.email(), req.password()))
                 .when()
@@ -77,8 +86,15 @@ public class AuthTest extends AbstractAuthTest {
 
         RestAssured.given(this.spec)
                 .filter(document("회원가입 성공",
-                        requestFields(SIGNUP_REQUEST_FIELDS),
-                        responseFields(AUTH_RESPONSE_FIELDS)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Auth")
+                            .summary("회원가입 API")
+                            .description("사용자의 이메일, 비밀번호를 이용하여 회원가입을 진행합니다. 회원가입 후 인증 토큰을 발급합니다.")
+                            .requestFields(SIGNUP_REQUEST_FIELDS)
+                            .responseFields(AUTH_RESPONSE_FIELDS)
+                            .build()
+                )))
                 .contentType("application/json")
                 .body(request)
                 .when()

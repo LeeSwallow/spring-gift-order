@@ -1,17 +1,12 @@
 package gift.common.model;
 
+import gift.entity.type.Provider;
 import gift.entity.type.UserRole;
-
-import java.util.Comparator;
-import java.util.Set;
 
 public record CustomAuth(
     Long userId,
-    UserRole role
+    UserRole role,
+    Provider provider
 ) {
-    public CustomAuth(Long userId, Set<UserRole> roles) {
-        this(userId, roles.stream().max(Comparator.comparing(UserRole::getPriority))
-                .orElseThrow(() -> new IllegalArgumentException("사용자 역할이 비어 있습니다!")));
-    }
 }
 

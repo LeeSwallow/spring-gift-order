@@ -1,6 +1,7 @@
 package gift.repository.user;
 
 import gift.entity.User;
+import gift.entity.type.Provider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -18,7 +19,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(Long id);
 
     @EntityGraph("User.withRole")
+    Optional<User> findByClientIdAndProvider(String clientId, Provider provider);
+
+    @EntityGraph("User.withRole")
     Optional<User> findByEmail(String email);
 
     Boolean existsByEmail(String email);
+    Boolean existsByClientIdAndProvider(String clientId, Provider provider);
 }

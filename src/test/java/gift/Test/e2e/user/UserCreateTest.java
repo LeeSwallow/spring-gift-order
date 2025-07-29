@@ -1,5 +1,6 @@
 package gift.Test.e2e.user;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.user.UserAdminResponse;
 import gift.dto.user.UserCreateRequest;
 import gift.entity.type.UserRole;
@@ -11,11 +12,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 public class UserCreateTest extends AbstractUserTest {
 
@@ -44,9 +45,15 @@ public class UserCreateTest extends AbstractUserTest {
         UserCreateRequest request = new UserCreateRequest("testuser1@example.com", "password123!", List.of("ROLE_USER"));
         UserAdminResponse response = RestAssured.given(this.spec)
                 .filter(document("관리자 권한으로 사용자 생성 성공",
-                        requestFields(USER_CREATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(ADMIN_RESPONSE)))
+                    resource(ResourceSnippetParameters.builder()
+                        .tag("User")
+                        .summary("사용자 생성 API")
+                        .description("관리자 권한으로 새로운 사용자를 생성합니다.")
+                        .requestFields(USER_CREATE_REQUEST)
+                        .requestHeaders(AUTHENTICATE_HEADERS)
+                        .responseFields(ADMIN_RESPONSE)
+                        .build()
+                )))
                 .contentType("application/json")
                 .header(AUTH_HEADER_KEY, this.testUserTokens.get(UserRole.ROLE_ADMIN)) // 관리자 권한으로 요청
                 .body(request)
@@ -69,11 +76,7 @@ public class UserCreateTest extends AbstractUserTest {
     public void Admin_Create_Failure_NoAuth() {
         String url = getRequestUrl();
         UserCreateRequest request = new UserCreateRequest("testuser1@example.com", "password123!", List.of("ROLE_USER"));
-        RestAssured.given(this.spec)
-                .filter(document("관리자 권한 없이 사용자 생성 실패",
-                        requestFields(USER_CREATE_REQUEST),
-                        requestHeaders(AUTHENTICATE_HEADERS),
-                        responseFields(ERROR_MESSAGE_FIELDS)))
+        RestAssured.given()
                 .contentType("application/json")
                 .body(request)
                 .when()

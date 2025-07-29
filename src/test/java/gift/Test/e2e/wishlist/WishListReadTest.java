@@ -1,5 +1,6 @@
 package gift.Test.e2e.wishlist;
 
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import gift.dto.wishlist.WishedProductResponse;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
@@ -9,13 +10,12 @@ import org.springframework.restdocs.payload.JsonFieldType;
 
 import java.util.List;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static com.epages.restdocs.apispec.RestAssuredRestDocumentationWrapper.document;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 
 public class WishListReadTest extends AbstractWishlistTest {
 
@@ -51,8 +51,16 @@ public class WishListReadTest extends AbstractWishlistTest {
         // 위시리스트 전체 조회 성공 테스트
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 전체 조회 성공",
-                        queryParameters(PAGE_PARAMETERS),
-                        responseFields(PRODUCT_READ_PAGE_RESPONSE)))
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Wishlist")
+                                .summary("위시리스트 전체 조회 API")
+                                .description("사용자의 위시리스트에 추가된 모든 제품을 페이지 단위로 조회합니다. " +
+                                        " 토큰으로 부터 사용자 정보를 추출하여 해당 사용자의 위시리스트를 조회합니다.")
+                                .queryParameters(PAGE_PARAMETERS)
+                                .requestHeaders(AUTHENTICATE_HEADERS)
+                                .responseFields(PRODUCT_READ_PAGE_RESPONSE)
+                                .build()
+                )))
                 .header(AUTH_HEADER_KEY, this.testToken)
                 .when()
                 .get(getRequestUrl())
@@ -109,13 +117,7 @@ public class WishListReadTest extends AbstractWishlistTest {
     @DisplayName("위시리스트 전체 조회 실패 테스트 : 권한이 없는 경우(403 Forbidden)")
     public void find_All_Wishlist_Failure_Unauthorized() {
         // 위시리스트 전체 조회 실패 테스트 : 권한이 없는 경우(403 Forbidden)
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 전체 조회 실패 - 권한 없음",
-                        queryParameters(
-                                parameterWithName("page").description("페이지 번호").optional(),
-                                parameterWithName("size").description("페이지 크기").optional()
-                        ),
-                        responseFields(ERROR_MESSAGE_FIELDS)))
+        RestAssured.given()
                 .when()
                 .get(getRequestUrl())
                 .then()
@@ -133,9 +135,6 @@ public class WishListReadTest extends AbstractWishlistTest {
 
         invalidSortFields.forEach(sortField ->
             RestAssured.given(this.spec)
-                    .filter(document("위시리스트 전체 조회 실패 - 잘못된 정렬 파라미터",
-                            queryParameters(PAGE_PARAMETERS),
-                            responseFields(ERROR_MESSAGE_FIELDS)))
                     .header(AUTH_HEADER_KEY, this.testToken)
                     .queryParam("sort", sortField)
                     .when()
@@ -152,10 +151,22 @@ public class WishListReadTest extends AbstractWishlistTest {
         var res = addProductToWishlist(productId, 3);
         RestAssured.given(this.spec)
                 .filter(document("위시리스트 단건 제품 조회 성공",
-                        responseFields(PRODUCT_READ_RESPONSE)))
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("Wishlist")
+                            .summary("위시리스트 단건 제품 조회 API")
+                            .description("사용자의 위시리스트에 추가된 특정 제품을 조회합니다. " +
+                                    "토큰으로 부터 사용자 정보를 추출하여 해당 사용자의 위시리스트를 조회합니다.")
+                            .pathParameters(
+                                    parameterWithName("id").description("위시리스트 ID")
+                            )
+                            .requestHeaders(AUTHENTICATE_HEADERS)
+                            .responseFields(PRODUCT_READ_RESPONSE)
+                            .build()
+                )))
                 .header(AUTH_HEADER_KEY, this.testToken)
                 .when()
-                .get(getRequestUrl() + "/" + res.id())
+                .get(getRequestUrl() + "/{id}", res.id())
                 .then()
                 .statusCode(200)
                 .body("id", notNullValue())
@@ -178,9 +189,7 @@ public class WishListReadTest extends AbstractWishlistTest {
     @DisplayName("위시리스트 단건 제품 조회 실패 테스트 : 존재하지 않는 제품 ID 요청 시 404 반환")
     public void find_Wishlist_Product_Failure_NonExistentId_404_Returned() {
         // 위시리스트 단건 제품 조회 실패 테스트 : 존재하지 않는 제품 ID 요청 시 404 반환
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 단건 제품 조회 실패 - 존재하지 않는 제품 ID",
-                        responseFields(ERROR_MESSAGE_FIELDS)))
+        RestAssured.given()
                 .header(AUTH_HEADER_KEY, this.testToken)
                 .when()
                 .get(getRequestUrl() + "/999999") // 존재하지 않는 ID
@@ -194,9 +203,7 @@ public class WishListReadTest extends AbstractWishlistTest {
         // 위시리스트 단건 제품 조회 실패 테스트 : 권한이 없는 경우(403 Forbidden)
         Long productId = this.testProducts.getFirst().id();
         var res = addProductToWishlist(productId, 3);
-        RestAssured.given(this.spec)
-                .filter(document("위시리스트 단건 제품 조회 실패 - 권한 없음",
-                        responseFields(ERROR_MESSAGE_FIELDS)))
+        RestAssured.given()
                 .when()
                 .get(getRequestUrl() + "/" + res.id())
                 .then()

@@ -7,11 +7,12 @@ CREATE TABLE IF NOT EXISTS  users (
     id BIGINT AUTO_INCREMENT,
     email VARCHAR(255) UNIQUE,
     password VARCHAR(255),
-    client_id VARCHAR(255) UNIQUE,
+    client_id VARCHAR(255),
     provider VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (client_id, provider)
 );
 
 CREATE TABLE IF NOT EXISTS  user_roles (
@@ -56,6 +57,19 @@ CREATE TABLE IF NOT EXISTS options (
     PRIMARY KEY (id),
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     UNIQUE (product_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS  orders (
+    id BIGINT AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    option_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    total_price BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (option_id) REFERENCES options(id) ON DELETE CASCADE
 );
 
 INSERT INTO products (name, price, image_url, owner_id) VALUES

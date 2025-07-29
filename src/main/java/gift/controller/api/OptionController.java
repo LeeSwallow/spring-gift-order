@@ -55,7 +55,7 @@ public class OptionController {
     @PostMapping
     public ResponseEntity<OptionResponse> createOption(
             @PathVariable Long productId,
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             @Valid @RequestBody OptionCreateRequest request
             ) {
         var savedOption =
@@ -69,7 +69,7 @@ public class OptionController {
     public ResponseEntity<?> updateOption(
             @PathVariable Long productId,
             @PathVariable Long id,
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             @Valid @RequestBody OptionUpdateRequest request
     ) {
         var updatedOption = optionService.update(id, productId, auth, request.name(), request.quantity());
@@ -81,7 +81,7 @@ public class OptionController {
     public ResponseEntity<OptionResponse> updateOptionQuantity(
             @PathVariable Long productId,
             @PathVariable Long id,
-            @RequestAttribute("auth") CustomAuth auth,
+            CustomAuth auth,
             @Valid @RequestBody OptionPatchRequest request
             ) {
         var updatedOption = optionService.changeQuantityBy(id, productId, auth, request.amount());
@@ -93,7 +93,7 @@ public class OptionController {
     public ResponseEntity<Void> deleteOption(
             @PathVariable Long productId,
             @PathVariable Long id,
-            @RequestAttribute("auth") CustomAuth auth
+            CustomAuth auth
     ) {
         optionService.deleteBy(id, productId, auth);
         return ResponseEntity.noContent().build();

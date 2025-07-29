@@ -14,10 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.util.NoSuchElementException;
 
@@ -118,6 +120,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(builder.build().toProblemDetail(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<ProblemDetail> handleResourceAccessException(
+            ResourceAccessException e, HttpServletRequest request
+    ) {
+        if (e.getCause() instanceof SocketTimeoutException) {
+            var detail = new ErrorMessageResponse.Builder(request, e, HttpStatus.REQUEST_TIMEOUT).build()
+                    .toProblemDetail();
+            detail.setTitle("요청 시간 초과");
+            detail.setDetail("외부 서비스에 접근하는 동안 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.");
+            return new ResponseEntity<>(detail, HttpStatus.REQUEST_TIMEOUT);
+        }
+
+        var detail = new ErrorMessageResponse.Builder(request, e,  HttpStatus.SERVICE_UNAVAILABLE).build()
+                .toProblemDetail();
+        detail.setTitle("서비스 이용 불가");
+        detail.setDetail("외부 서비스에 접근할 수 없습니다. 잠시 후 다시 시도해주세요.");
+        return new ResponseEntity<>(detail, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+
     @ExceptionHandler(KakaoAuthorizationException.class)
     public ResponseEntity<ProblemDetail> handleKakaoAuthorizationException(
             KakaoAuthorizationException e, HttpServletRequest request
@@ -126,6 +148,17 @@ public class GlobalExceptionHandler {
         ProblemDetail errorDetail = builder.build().toProblemDetail();
         errorDetail.setType(URI.create("https://developers.kakao.com/docs/latest/ko/kakaologin/trouble-shooting"));
         errorDetail.setTitle("카카오 인증 오류 : " + e.getErrorCode());
+        return new ResponseEntity<>(errorDetail, e.getStatus());
+    }
+
+    @ExceptionHandler(KakaoApiException.class)
+    public ResponseEntity<ProblemDetail> handleKakaoApiException(
+            KakaoApiException e, HttpServletRequest request
+    ) {
+        var builder = new ErrorMessageResponse.Builder(request, e, e.getStatus());
+        ProblemDetail errorDetail = builder.build().toProblemDetail();
+        errorDetail.setType(URI.create("https://developers.kakao.com/docs/latest/ko/rest-api/reference#error-code"));
+        errorDetail.setTitle("카카오 API 오류 : " + e.getErrorCode());
         return new ResponseEntity<>(errorDetail, e.getStatus());
     }
 
